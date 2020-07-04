@@ -1,32 +1,82 @@
 import Foundation
 
-//Задание 1.
-
-func isNumberEven (number: Int) -> Bool{
-    return number % 2 == 0
+enum TurnOnTheEngine {
+    case on, off
 }
 
-//Задание 2.
-
-func isNumberDivisibleThree (number: Int) -> Bool{
-    return number % 3 == 0
+enum WindowsPosition {
+    case open, close
 }
 
-// Задание 3.
-
-var myArray: [Int] = []
-
-var a = 0
-
-for _ in stride(from: 1, to: 101, by: 1) {
-    myArray.append(a+1)
-    a += 1
+enum LoadTrunk {
+    case load, unload
 }
 
-//Задание 4.
+struct PassengerCar {
+    
+    var brand: String
+    var yearRelease: UInt
+    var trunVolume: UInt
+    var engineStarted: TurnOnTheEngine
+    var windowsOpen: WindowsPosition
+    var cargoVolume: UInt
+    
+    mutating func startEngine (switchEngine: TurnOnTheEngine) -> TurnOnTheEngine {
+        engineStarted = switchEngine
+        return engineStarted
+    }
+    mutating func windowRegulation(switchWindows: WindowsPosition) -> WindowsPosition {
+        windowsOpen = switchWindows
+        return windowsOpen
+    }
+    mutating func freeVolume(loadingWork: LoadTrunk) -> UInt {
+        
+        switch loadingWork {
+        case .load:
+            return trunVolume - cargoVolume
+        case .unload:
+             return trunVolume
+        }
+    }
+}
 
-myArray.removeAll {isNumberEven(number: $0) || isNumberDivisibleThree(number: $0)}
+var car1 = PassengerCar(brand: "bmw", yearRelease: 2001, trunVolume: 1000, engineStarted: .off, windowsOpen: .close, cargoVolume: 200)
+
+car1.startEngine(switchEngine: .on)
+car1.windowRegulation(switchWindows: .close)
+car1.freeVolume(loadingWork: .load)
 
 
+struct TruckCar {
+    
+    var brand: String
+    var yearRelease: UInt
+    var trunVolume: UInt
+    var engineStarted: TurnOnTheEngine
+    var windowsOpen: WindowsPosition
+    var cargoVolume: UInt
+    
+    mutating func startEngine (switchEngine: TurnOnTheEngine) -> TurnOnTheEngine {
+        engineStarted = switchEngine
+        return engineStarted
+    }
+    mutating func windowRegulation(switchWindows: WindowsPosition) -> WindowsPosition {
+        windowsOpen = switchWindows
+        return windowsOpen
+    }
+    mutating func freeVolume(loadingWork: LoadTrunk) -> UInt {
+        
+        switch loadingWork {
+        case .load:
+            return trunVolume - cargoVolume
+        case .unload:
+             return trunVolume
+        }
+    }
+}
 
+var car2 = TruckCar(brand: "Volvo", yearRelease: 2020, trunVolume: 5000, engineStarted: .on, windowsOpen: .close, cargoVolume: 2700)
 
+car2.startEngine(switchEngine: .on)
+car2.windowRegulation(switchWindows: .close)
+car2.freeVolume(loadingWork: .load)
