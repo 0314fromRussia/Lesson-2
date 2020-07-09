@@ -1,82 +1,125 @@
 import Foundation
 
-enum TurnOnTheEngine {
-    case on, off
+class Car {
+    
+    var quantityDoors: Int
+    var yearRelease: Int
+    var enginePower: Int
+    var color: String
+    
+    func repaint(newColor: String) -> String {
+        
+        color = newColor
+        return newColor
+    }
+    
+    
+    init(doors: Int, year: Int, power: Int, color: String) {
+        self.quantityDoors = doors
+        self.yearRelease = year
+        self.enginePower = power
+        self.color = color
+    }
 }
 
-enum WindowsPosition {
-    case open, close
+enum Speed {
+    case fast, superFast
 }
 
-enum LoadTrunk {
-    case load, unload
-}
 
-struct PassengerCar {
+class SportCar: Car {
     
     var brand: String
-    var yearRelease: UInt
-    var trunVolume: UInt
-    var engineStarted: TurnOnTheEngine
-    var windowsOpen: WindowsPosition
-    var cargoVolume: UInt
-    
-    mutating func startEngine (switchEngine: TurnOnTheEngine) -> TurnOnTheEngine {
-        engineStarted = switchEngine
-        return engineStarted
-    }
-    mutating func windowRegulation(switchWindows: WindowsPosition) -> WindowsPosition {
-        windowsOpen = switchWindows
-        return windowsOpen
-    }
-    mutating func freeVolume(loadingWork: LoadTrunk) -> UInt {
+    var torque: Int
+    var maxSpeed: Speed
+
+    func speedMax(_: Speed) {
         
-        switch loadingWork {
-        case .load:
-            return trunVolume - cargoVolume
-        case .unload:
-             return trunVolume
+        var carSpeed: Int
+        
+        switch maxSpeed {
+        case .fast:
+            carSpeed = 300
+    
+        case .superFast:
+            carSpeed = 400
         }
+        print("Максимальная скорость твоего автомобиля \(carSpeed)")
+    }
+    
+    override func repaint(newColor: String) -> String {
+        
+        if color == "Red"{
+            print("отличный цвет для спортивной машины")
+        }else{
+            color = newColor
+        }
+        return newColor
+    }
+    
+    init(brand: String, torque: Int, speed: Speed) {
+        self.maxSpeed = speed
+        self.torque = torque
+        self.brand = brand
+        super.init(doors: 2, year: 2010, power: 500, color: "Red")  // не очень понимаю почему тут обязательно заполнять реальными значениями doors year power и тд, они будут использованы если init Car каким-то образом не сработает? Мы же всегда сначала Car создадим, а потом SportCar
     }
 }
 
-var car1 = PassengerCar(brand: "bmw", yearRelease: 2001, trunVolume: 1000, engineStarted: .off, windowsOpen: .close, cargoVolume: 200)
+enum Volume {
+    case big, medium, little
+}
 
-car1.startEngine(switchEngine: .on)
-car1.windowRegulation(switchWindows: .close)
-car1.freeVolume(loadingWork: .load)
-
-
-struct TruckCar {
+class TrunkCar: Car {
     
     var brand: String
-    var yearRelease: UInt
-    var trunVolume: UInt
-    var engineStarted: TurnOnTheEngine
-    var windowsOpen: WindowsPosition
-    var cargoVolume: UInt
+    var maxVolume: Volume
+    var trailer: Bool
     
-    mutating func startEngine (switchEngine: TurnOnTheEngine) -> TurnOnTheEngine {
-        engineStarted = switchEngine
-        return engineStarted
-    }
-    mutating func windowRegulation(switchWindows: WindowsPosition) -> WindowsPosition {
-        windowsOpen = switchWindows
-        return windowsOpen
-    }
-    mutating func freeVolume(loadingWork: LoadTrunk) -> UInt {
+    func volumeMax(_: Volume) {
         
-        switch loadingWork {
-        case .load:
-            return trunVolume - cargoVolume
-        case .unload:
-             return trunVolume
+        var carVolume: Int
+        
+        switch maxVolume {
+        case .big:
+            carVolume = 10
+    
+        case .medium:
+            carVolume = 5
+        
+        case .little:
+            carVolume = 2
         }
+        print("Максимальная грузоподъемность твоего автомобиля: \(carVolume) ")
+    }
+    
+    override func repaint(newColor: String) -> String {
+           
+           if color == "Red"{
+               print("Слишком броско для твоей машины")
+           }else{
+               color = newColor
+           }
+           return newColor
+       }
+    
+    init(brand: String, volume: Volume, trailer: Bool) {
+        self.maxVolume = volume
+        self.trailer = trailer
+        self.brand = brand
+        super.init(doors: 4, year: 2000, power: 200, color: "Black")
     }
 }
 
-var car2 = TruckCar(brand: "Volvo", yearRelease: 2020, trunVolume: 5000, engineStarted: .on, windowsOpen: .close, cargoVolume: 2700)
+var mainCar = Car(doors: 2, year: 2008, power: 300, color: "grey")
+var sportCar = SportCar(brand: "BMW", torque: 500, speed: .fast)
+var trunkCar = TrunkCar(brand: "Volvo", volume: .big, trailer: true)
 
-car2.startEngine(switchEngine: .on)
-car2.windowRegulation(switchWindows: .close)
-car2.freeVolume(loadingWork: .load)
+mainCar.color = "Red"
+sportCar.repaint(newColor: "Green")
+print(mainCar.color)
+trunkCar.repaint(newColor: "Purple") // не могу понять почему нет принта "Слишком броско для твоей машины"
+print(mainCar.color)
+
+sportCar.speedMax(.fast)
+trunkCar.volumeMax(.little)
+
