@@ -1,142 +1,49 @@
 import Foundation
 
-enum Position {
+protocol Queue {
     
-    case right, left
+    var quantity: Int {get set}
+    
 }
 
-enum Volume {
-    case big, medium, little
-}
-
-protocol AllCars {
+class PeopleInQueue: Queue {
     
-    var positionWheel: Position { get set }
-    var doorsCount: Int { get set }
-    var color: String { get set }
+    var quantity: Int
     
-    func drive()
-}
-
-extension AllCars {
+    var positionFromStart: Int
     
-    mutating func repaint(newColor: String) -> String {
-        color = newColor
-        return newColor
+    init(position: Int, quantity: Int) {
+        self.positionFromStart = position
+        self.quantity = quantity
     }
 }
 
-extension AllCars {
+class SpeedQueue: Queue {
     
-    mutating func changePositionWheel(newPosition: Position) -> Position {
-        positionWheel = newPosition
-        return newPosition
+    var quantity: Int
+    var speed: Int
+    
+    init(speed: Int, quantity: Int) {
+        self.speed = speed
+        self.quantity = quantity
     }
 }
 
-extension AllCars {
+struct MyQueue<T: Queue> {
     
-    func drive(line: Position) {
-        print("начинаем движение в \(line)")
+    private var elements: [T] = []
+    mutating func push(_ items: T) {
+        elements.append(items)
+    }
+    mutating func pop() -> T? {
+        return elements.removeLast()
+    }
+    
+    subscript (element: Int) -> T? {
+        if element > elements.count - 1 || element < 0 {
+            return nil
+        }else{
+            return elements[element]
+        }
     }
 }
-
-class Cars: AllCars {
-    
-    var positionWheel: Position
-    
-    var doorsCount: Int
-    
-    var color: String
-    
-    func drive() {
-        print("Машина поехала")
-    }
-    
-    init(wheel: Position, door: Int, color: String) {
-        self.positionWheel = wheel
-        self.doorsCount = door
-        self.color = color
-    }
-}
-
-class TrunkCar: AllCars {
-    
-    func drive() {
-        print("поехали в неизвестном направлении")
-    }
-    
-    var positionWheel: Position
-    
-    var doorsCount: Int
-    
-    var color: String
-    
-    var maxVolume: Volume
-    
-    init(wheel: Position, door: Int, color: String, volume: Volume) {
-        self.positionWheel = wheel
-        self.doorsCount = door
-        self.color = color
-        self.maxVolume = volume
-    }
-}
-
-extension TrunkCar: CustomStringConvertible {
-    
-    var description: String {
-        return "\(color), \(maxVolume), \(doorsCount), \(positionWheel)"
-    }
-}
-
-enum Speed {
-    case fast, superFast
-}
-
-class SportCar: AllCars {
-    
-    func drive() {
-        print("поехали в неизвестном направлении")
-    }
-    
-    var positionWheel: Position
-    
-    var doorsCount: Int
-    
-    var color: String
-    
-    var maxSpeed: Speed
-    
-    init(wheel: Position, door: Int, color: String, speed: Speed) {
-        self.positionWheel = wheel
-        self.doorsCount = door
-        self.color = color
-        self.maxSpeed = speed
-    }
-}
-
-extension SportCar: CustomStringConvertible {
-    
-    var description: String {
-        return "\(color), \(maxSpeed), \(doorsCount), \(positionWheel)"
-    }
-}
-
-var myTrunkCar = TrunkCar(wheel: .left, door: 4, color: "Black", volume: .big)
-myTrunkCar.drive()
-myTrunkCar.drive(line: .left)
-myTrunkCar.description
-myTrunkCar.repaint(newColor: "Blue")
-myTrunkCar.changePositionWheel(newPosition: .right)
-myTrunkCar.description
-
-var mySportCar = SportCar(wheel: .left, door: 2, color: "Red", speed: .fast)
-mySportCar.color
-mySportCar.drive()
-mySportCar.changePositionWheel(newPosition: .right)
-mySportCar.drive(line: .left)
-mySportCar.repaint(newColor: "Grey")
-mySportCar.description
-
-print("Характеристики спортивного автомобиля:" + mySportCar.description)
-print("Характеристики грузового автомобиля:" + myTrunkCar.description)
