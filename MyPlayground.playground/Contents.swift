@@ -1,49 +1,42 @@
 import Foundation
 
-protocol Queue {
+
+enum ErrorsWithPlanets: Error {
     
-    var quantity: Int {get set}
-    
+    case thereIsNoSuchPlanet
+    case youCannotAddSatelliteAsPlanet
 }
 
-class PeopleInQueue: Queue {
+class PlanetsOfTheSolarSystem {
     
-    var quantity: Int
+    var planets = [ "Mercury", "Venusian", "Earth", "Mars", "Jupiter", "Neptune", "Uranus"]
     
-    var positionFromStart: Int
-    
-    init(position: Int, quantity: Int) {
-        self.positionFromStart = position
-        self.quantity = quantity
-    }
-}
-
-class SpeedQueue: Queue {
-    
-    var quantity: Int
-    var speed: Int
-    
-    init(speed: Int, quantity: Int) {
-        self.speed = speed
-        self.quantity = quantity
-    }
-}
-
-struct MyQueue<T: Queue> {
-    
-    private var elements: [T] = []
-    mutating func push(_ items: T) {
-        elements.append(items)
-    }
-    mutating func pop() -> T? {
-        return elements.removeLast()
-    }
-    
-    subscript (element: Int) -> T? {
-        if element > elements.count - 1 || element < 0 {
-            return nil
-        }else{
-            return elements[element]
+    func addPlanet(planet: String) throws -> ErrorsWithPlanets? {
+        guard planet != "Moon" else{
+            throw ErrorsWithPlanets.youCannotAddSatelliteAsPlanet
         }
+        planets.append(planet)
+        return nil
     }
+    
+    func destroyPlanet(planet: String) -> (String?, ErrorsWithPlanets?) {
+        
+        if planets.contains(planet) == true {
+            
+            planets.removeAll { $0 == planet }
+        } else {
+            print("Такой планеты в солнечной системе нет!")
+            return ( nil, ErrorsWithPlanets.thereIsNoSuchPlanet)
+        }
+        return ("Планета \(planet) уничтожена", nil)
+    }
+}
+var sunSystem = PlanetsOfTheSolarSystem()
+sunSystem.destroyPlanet(planet: "Mars")
+
+do {
+   try sunSystem.addPlanet(planet: "Moon")
+} catch {
+    print("error")
+    
 }
